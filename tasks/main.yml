@@ -51,7 +51,9 @@
     immediate: yes
     permanent: yes
 
-- name: "Configure private network: 2378-2380/tcp"
+# incoming etcd client/peer requests
+# sources: etcd and controlplane nodes
+- name: "Configure private network: 2379-2380/tcp"
   firewalld:
     zone: internal
     port: "2379-2380/tcp"
@@ -59,6 +61,8 @@
     immediate: yes
     permanent: yes
 
+# Canal/Flannel VXLAN overlay networking
+# Sources: etcd nodes, controlplane nodes, worker nodes
 - name: "Configure private network: 8472/udp"
   firewalld:
     zone: internal
@@ -67,6 +71,18 @@
     immediate: yes
     permanent: yes
 
+# Canal/Flannel livenessProbe/readinessProbe
+# source: etcd node itself (local traffic, not across nodes)
+- name: "Configure private network: 9099/tcp"
+  firewalld:
+    zone: internal
+    port: "9099/tcp"
+    state: enabled
+    immediate: yes
+    permanent: yes
+
+# kubelet (
+# Source: controlplane nodes
 - name: "Configure private network: 10250/tcp"
   firewalld:
     zone: internal
@@ -100,3 +116,22 @@
     immediate: yes
     permanent: yes
 
+# Nodeport traffic for the cluster NodePort port range
+# Sources: Any source that consumes NodePort services
+- name: "Configure private network: 30000-32767/tcp"
+  firewalld:
+    zone: internal
+    port: "30000-32767/tcp"
+    state: enabled
+    immediate: yes
+    permanent: yes
+
+# Nodeport traffic for the cluster NodePort port range
+# Sources: Any source that consumes NodePort services
+- name: "Configure private network: 30000-32767/udp"
+  firewalld:
+    zone: internal
+    port: "30000-32767/udp"
+    state: enabled
+    immediate: yes
+    permanent: yes
