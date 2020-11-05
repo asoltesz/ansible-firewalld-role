@@ -18,6 +18,15 @@
     immediate: yes
   with_items: "{{ open_services }}"
 
+- name: Configure open ports (specified with port numbers)
+  firewalld:
+    zone: "public"
+    port: "{{ item }}"
+    state: enabled
+    permanent: yes
+    immediate: yes
+  with_items: "{{ open_ports }}"
+
 - name: Lock down cockpit service
   firewalld:
     zone: "{{ item }}"
