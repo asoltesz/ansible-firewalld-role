@@ -60,6 +60,15 @@
     immediate: yes
     permanent: yes
 
+# Rancher node communicating with Docker daemon on TLS port
+- name: "Configure private network: 2376/tcp"
+  firewalld:
+    zone: internal
+    port: "2376/tcp"
+    state: enabled
+    immediate: yes
+    permanent: yes
+
 # incoming etcd client/peer requests
 # sources: etcd and controlplane nodes
 - name: "Configure private network: 2379-2380/tcp"
